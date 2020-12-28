@@ -3,3 +3,4 @@
 ## Links
 
  - https://github.com/JamesDaniel/local-node-modules
+ - https://github.com/JamesDaniel/detect-file-changes

@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-function append(config, newData) {
+function appendIfNotExists(config, newData) {
     const fileData = JSON.parse(fs.readFileSync(config.filename, 'utf8'));
 
     const uniqueKeys = fileData.map(el => el.linkUrl);
@@ -19,7 +19,9 @@ function append(config, newData) {
 
     console.log(`${dataToSave.length} new apartment(s) found`);
 
-    fs.writeFileSync(config.filename, JSON.stringify(fileData, null, 2));
+    if (dataToSave.length > 0) {
+        fs.writeFileSync(config.filename, JSON.stringify(fileData, null, 2));
+    }
 }
 
-module.exports.append = append;
+module.exports.appendIfNotExists = appendIfNotExists;

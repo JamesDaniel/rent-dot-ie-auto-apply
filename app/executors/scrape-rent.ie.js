@@ -1,6 +1,6 @@
 const fs = require('fs');
 const delay = require('../async-utils').delay;
-const append = require('../tasks/apartment-list-task').append;
+const appendIfNotExists = require('../tasks/apartment-list-task').appendIfNotExists;
 const puppeteer = require('puppeteer');
 
 async function startScraping(config) {
@@ -48,7 +48,7 @@ async function visitPage(config) {
 
             apartments = apartments.filter(e => e.isDoubleRoom);
 
-            append(config, apartments);
+            appendIfNotExists(config, apartments);
 
             await page.waitForTimeout(2000);
         } catch (error) {

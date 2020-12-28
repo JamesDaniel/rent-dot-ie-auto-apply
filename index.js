@@ -1,6 +1,6 @@
 const application = require('./app/main');
 const config = {
-    filename: process.env.FILENAME || './my-file.json'
+    filename: process.env.FILENAME || './apartments.json'
 };
 
 try {

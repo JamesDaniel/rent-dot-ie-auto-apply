@@ -1,4 +1,6 @@
 const fs = require('fs');
+const emailService = require('../tasks/email-service');
+const apartmentListTask = require('../tasks/apartment-list-task');
 
 async function listenForFileChanges(config) {
     try {
@@ -14,9 +16,16 @@ async function listenForFileChanges(config) {
     }
 }
 
-async function sendEmail(config, data) {
-    console.log('this is where code for sending email will go.');
-    console.log(JSON.stringify(data, null, 2));
+function sendEmail(config, data) {
+    if (data.length < 1) {
+        return;
+    }
+    const message = data.reduce((preVal, curVal) => {
+        return (preVal + curVal.linkUrl + "\n");
+    }, "\nApartments Found List: \n");
+    emailService.sendEmail(config, message);
+
+    apartmentListTask.updateEmailsSent(config);
 }
 
 function execute(config, callback) {

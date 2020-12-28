@@ -24,4 +24,13 @@ function appendIfNotExists(config, newData) {
     }
 }
 
+function updateEmailsSent(config) {
+    const fileData = JSON.parse(fs.readFileSync(config.filename, 'utf8'));
+
+    fileData.forEach(el => el.emailSent = true);
+
+    fs.writeFileSync(config.filename, JSON.stringify(fileData, null, 2));
+}
+
 module.exports.appendIfNotExists = appendIfNotExists;
+module.exports.updateEmailsSent = updateEmailsSent;

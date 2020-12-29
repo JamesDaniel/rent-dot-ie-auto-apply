@@ -1,6 +1,6 @@
+const smsService = require('../tasks/sms-service');
+const updateSmsSent = require('../tasks/data-service').updateSmsSent;
 const fs = require('fs');
-const emailService = require('../tasks/email-service');
-const updateEmailsSent = require('../tasks/data-service').updateEmailsSent;
 
 async function listenForFileChanges(config) {
     try {
@@ -8,7 +8,7 @@ async function listenForFileChanges(config) {
             if (filename && eventType === 'change') {
                 const data = JSON.parse(fs.readFileSync(filename, 'utf8'));
 
-                sendEmail(config, data.filter(el => !el.emailSent));
+                sendSms(config, data.filter(el => !el.smsSent));
             }
         });
     } catch (error) {
@@ -16,15 +16,13 @@ async function listenForFileChanges(config) {
     }
 }
 
-function sendEmail(config, data) {
+function sendSms(config, data) {
     if (data.length < 1) {
         return;
     }
-    const message = data.reduce((preVal, curVal) => {
-        return (preVal + curVal.linkUrl + "\n");
-    }, "\nApartments Found List: \n");
-    emailService.sendEmail(config, message);
-    updateEmailsSent(config);
+    const message = "New Apartments Found. Check your email";
+    smsService.sendSms(config, message);
+    updateSmsSent(config);
 }
 
 function execute(config, callback) {

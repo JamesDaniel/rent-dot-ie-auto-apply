@@ -32,5 +32,14 @@ function updateEmailsSent(config) {
     fs.writeFileSync(config.filename, JSON.stringify(fileData, null, 2));
 }
 
+function updateSmsSent(config) {
+    const fileData = JSON.parse(fs.readFileSync(config.filename, 'utf8'));
+
+    fileData.forEach(el => el.smsSent = true);
+
+    fs.writeFileSync(config.filename, JSON.stringify(fileData, null, 2));
+}
+
 module.exports.saveIfNotExists = saveIfNotExists;
 module.exports.updateEmailsSent = updateEmailsSent;
+module.exports.updateSmsSent = updateSmsSent;

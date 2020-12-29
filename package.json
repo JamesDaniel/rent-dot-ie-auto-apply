@@ -11,6 +11,7 @@
   "dependencies": {
     "nodemailer": "^6.4.17",
     "puppeteer": "^5.5.0",
-    "run-parallel": "^1.1.10"
+    "run-parallel": "^1.1.10",
+    "twilio": "^3.54.1"
   }
 }

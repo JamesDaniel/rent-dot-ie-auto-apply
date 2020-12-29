@@ -1,6 +1,6 @@
 const fs = require('fs');
 const emailService = require('../tasks/email-service');
-const apartmentListTask = require('../tasks/apartment-list-task');
+const updateEmailsSent = require('../tasks/data-service').updateEmailsSent;
 
 async function listenForFileChanges(config) {
     try {
@@ -23,9 +23,13 @@ function sendEmail(config, data) {
     const message = data.reduce((preVal, curVal) => {
         return (preVal + curVal.linkUrl + "\n");
     }, "\nApartments Found List: \n");
-    emailService.sendEmail(config, message);
-
-    apartmentListTask.updateEmailsSent(config);
+    emailService.sendEmail(config, message)
+        .then(() => {
+            updateEmailsSent(config);
+        })
+        .catch(err => {
+            console.log(`Failed to send emails. ${err}`);
+        });
 }
 
 function execute(config, callback) {

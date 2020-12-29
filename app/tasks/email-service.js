@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-async function sendEmail(config, message) {
+function sendEmail(config, message) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         pool: true,
@@ -8,27 +8,28 @@ async function sendEmail(config, message) {
         port: 587,
         secure: true, // use TLS
         auth: {
-            user: process.env.EMAIL_FROM,
-            pass: process.env.EMAIL_SENDER_PASSWORD
+            user: config.emailFrom,
+            pass: config.emailSenderPassword
         }
     });
 
-    let info = await transporter.sendMail({
-        from: `"james daniel" <${process.env.EMAIL_FROM}>`, // sender address
-        to: process.env.EMAIL_TO_1, // list of receivers
+    console.log('Sending emails with message: \n' + message);
+
+    const promises = [];
+    promises.push(transporter.sendMail({
+        from: `"james daniel" <${config.emailFrom}>`, // sender address
+        to: config.emailTo1, // list of receivers
         subject: "New Apartment Found", // Subject line
         text: `Found a new apartment: ${message}`,
-    });
+    }));
+    promises.push(transporter.sendMail({
+        from: `"james daniel" <${config.emailFrom}>`, // sender address
+        to: config.emailTo2, // list of receivers
+        subject: "New Apartment Found", // Subject line
+        text: `Found a new apartment: ${message}`,
+    }));
 
-    // let info2 = await transporter.sendMail({
-    //     from: `"james daniel" <${process.env.EMAIL_FROM}>`, // sender address
-    //     to: process.env.EMAIL_TO_2, // list of receivers
-    //     subject: "New Apartment Found", // Subject line
-    //     text: `Found a new apartment: ${message}`,
-    // });
-
-    console.log("Message sent: %s", info.messageId);
-    // console.log("Message sent: %s", info2.messageId);
+    return Promise.all(promises);
 }
 
 

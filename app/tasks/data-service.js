@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-function appendIfNotExists(config, newData) {
+function saveIfNotExists(config, newData) {
     const fileData = JSON.parse(fs.readFileSync(config.filename, 'utf8'));
 
     const uniqueKeys = fileData.map(el => el.linkUrl);
@@ -32,5 +32,5 @@ function updateEmailsSent(config) {
     fs.writeFileSync(config.filename, JSON.stringify(fileData, null, 2));
 }
 
-module.exports.appendIfNotExists = appendIfNotExists;
+module.exports.saveIfNotExists = saveIfNotExists;
 module.exports.updateEmailsSent = updateEmailsSent;

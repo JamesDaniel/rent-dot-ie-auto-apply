@@ -51,11 +51,11 @@ async function visitPage(config) {
 
             const dataSaved = saveIfNotExists(config, apartments);
             if (dataSaved.length > 0) {
-                sendMsg('emailListener', 'screenScraper', JSON.stringify(dataSaved))
+                sendMsg(`${config.appId}emailListener`, 'screenScraper', JSON.stringify(dataSaved))
                     .then(() => {
                         console.log('Data sent to emailer');
                     });
-                sendMsg('smsListener', 'screenScraper', JSON.stringify(dataSaved))
+                sendMsg(`${config.appId}smsListener`, 'screenScraper', JSON.stringify(dataSaved))
                     .then(() => {
                         console.log('Data sent to sms sender');
                     });

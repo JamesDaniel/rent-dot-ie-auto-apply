@@ -1,14 +1,10 @@
 function sms(client, message, config, phoneTo) {
-    return new Promise((resolve, reject) => {
-        client.messages
-            .create({
-                body: message,
-                from: config.phoneFrom,
-                to: phoneTo
-            })
-            .then(result => resolve(result))
-            .catch(err => reject(err));
-    });
+    return client.messages
+        .create({
+            body: message,
+            from: config.phoneFrom,
+            to: phoneTo
+        });
 }
 
 async function sendSms(config, message) {

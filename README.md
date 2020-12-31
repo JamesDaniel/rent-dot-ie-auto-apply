@@ -6,3 +6,4 @@
  - https://nodemailer.com/smtp/
  - https://github.com/JamesDaniel/email-send-with-nodejs
  - https://github.com/JamesDaniel/node-ipc
+ - https://github.com/JamesDaniel/daft-dot-ie-auto-apply

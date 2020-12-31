@@ -1,15 +1,10 @@
 const smsService = require('../tasks/sms-service');
-const updateSmsSent = require('../tasks/data-service').updateSmsSent;
-const fs = require('fs');
+const listen = require('../tasks/unix-socket-service').listen;
 
-async function listenForFileChanges(config) {
+async function startListening(config) {
     try {
-        fs.watch(config.filename, (eventType, filename) => {
-            if (filename && eventType === 'change') {
-                const data = JSON.parse(fs.readFileSync(filename, 'utf8'));
-
-                sendSms(config, data.filter(el => !el.smsSent));
-            }
+        listen('smsListener', (data) => {
+            sendSms(config, JSON.parse(data));
         });
     } catch (error) {
         console.log('Trying again: ' + error);
@@ -20,14 +15,12 @@ function sendSms(config, data) {
     if (data.length < 1) {
         return;
     }
-    const message = "New Apartments Found. Check your email";
-    smsService.sendSms(config, message);
-    updateSmsSent(config);
+    smsService.sendSms(config, "New Apartments Found. Check your email");
 }
 
 function execute(config, callback) {
     try {
-        listenForFileChanges(config).then(() => {
+        startListening(config).then(() => {
             callback(null, 'add-to-file.js');
         })
     } catch (err) {

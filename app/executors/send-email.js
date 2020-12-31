@@ -1,15 +1,10 @@
-const fs = require('fs');
 const emailService = require('../tasks/email-service');
-const updateEmailsSent = require('../tasks/data-service').updateEmailsSent;
+const listen = require('../tasks/unix-socket-service').listen;
 
-async function listenForFileChanges(config) {
+async function startListening(config) {
     try {
-        fs.watch(config.filename, (eventType, filename) => {
-            if (filename && eventType === 'change') {
-                const data = JSON.parse(fs.readFileSync(filename, 'utf8'));
-
-                sendEmail(config, data.filter(el => !el.emailSent));
-            }
+        listen('emailListener', (data) => {
+            sendEmail(config, JSON.parse(data));
         });
     } catch (error) {
         console.log('Trying again: ' + error);
@@ -24,12 +19,11 @@ function sendEmail(config, data) {
         return (preVal + curVal.linkUrl + "\n");
     }, "\nApartments Found List: \n");
     emailService.sendEmail(config, message);
-    updateEmailsSent(config);
 }
 
 function execute(config, callback) {
     try {
-        listenForFileChanges(config).then(() => {
+        startListening(config).then(() => {
             callback(null, 'add-to-file.js');
         })
     } catch (err) {

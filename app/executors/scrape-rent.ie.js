@@ -2,6 +2,7 @@ const fs = require('fs');
 const delay = require('../async-utils').delay;
 const saveIfNotExists = require('../tasks/data-service').saveIfNotExists;
 const puppeteer = require('puppeteer');
+const sendMsg = require('../tasks/unix-socket-service').sendMsg;
 
 async function startScraping(config) {
     while (true) {
@@ -48,7 +49,18 @@ async function visitPage(config) {
 
             apartments = apartments.filter(e => e.isDoubleRoom);
 
-            saveIfNotExists(config, apartments);
+            const dataSaved = saveIfNotExists(config, apartments);
+            if (dataSaved.length > 0) {
+                sendMsg('emailListener', 'screenScraper', JSON.stringify(dataSaved))
+                    .then(() => {
+                        console.log('Data sent to emailer');
+                    });
+                sendMsg('smsListener', 'screenScraper', JSON.stringify(dataSaved))
+                    .then(() => {
+                        console.log('Data sent to sms sender');
+                    });
+            }
+
 
             await page.waitForTimeout(2000);
         } catch (error) {
